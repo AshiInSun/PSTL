@@ -1,4 +1,16 @@
+import random
+
 def table_building(objects, weights):
+    """
+    Construit une table Alias basée sur des poids entiers pour générer des variables aléatoires.
+    
+    Inputs:
+        objects (list): Liste des objets qu'on souhaite generer aleatoirement
+        weights (list): Liste des poids entiers associés aux objets
+    
+    Outputs:
+        list: Une table de triplets (v, x, x'), utilisée pour la génération 
+    """
 
     n = len(objects)
     total_weight = sum(weights)
@@ -29,8 +41,9 @@ def table_building(objects, weights):
                 table[k] = (light_weight, light_obj, heavy_obj)
             else:
                 table[m-1] = (light_weight, light_obj, heavy_obj)
+                k -= 1
             
-            weights[i] -= light_weight
+            weights[i] -= (cell_size-light_weight)
 
         else:
             table[k] = (cell_size, heavy_obj, None)
@@ -58,32 +71,25 @@ def table_building(objects, weights):
             table[k] = (light_weight2, light_obj2, light_obj)
         else:
             table[k] = (light_weight, light_obj, light_obj2)
-            
-    
-    return table
+         
+    return table, cell_size
 
 
-def sample_from_alias_table(alias_table):
+def generation(table, cs):
     """
-    Génère un objet aléatoire à partir de la table Alias construite.
+    Génère un objet aléatoire à partir de la table Alias
     
-    Args:
-        alias_table (list): Table de triplets (v, x, x').
+    Inputs:
+        table (list): La table de triplets (v, x, x')
+        cs (int): La moyenne des poids des objets
     
-    Returns:
-        str: L'objet généré aléatoirement.
+    Output:
+        str: L'objet généré aléatoirement
     """
-    import random
-    index = random.randint(0, len(alias_table) - 1)
-    weight, obj, alias_obj = alias_table[index]
-    return obj if random.randint(1, weight) == 1 else alias_obj
+    
+    size = len(table)
+    index = random.randint(0, size - 1)
+    weight, obj1, obj2 = table[index]
+    result = obj1 if random.randint(1, cs) <= weight else obj2
 
-
-# Exemple d'utilisation
-objects = ['A', 'B', 'C']
-weights = [3, 7, 5]
-alias_table = table_building(objects, weights)
-print(f"Table Alias: {alias_table}")
-
-for _ in range(5):
-    print(f"Échantillon généré: {sample_from_alias_table(alias_table)}")
+    return result
