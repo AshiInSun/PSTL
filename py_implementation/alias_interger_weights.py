@@ -9,13 +9,13 @@ def table_building(objects, weights):
         weights (list): Liste des poids entiers associés aux objets
     
     Outputs:
-        list: Une table de triplets (v, x, x'), utilisée pour la génération 
+        list: Une table de triplets (w, x, x'), utilisée pour la génération 
     """
 
     n = len(objects)
     total_weight = sum(weights)
     cell_size = total_weight // n
-    rest = total_weight % n
+    rest = total_weight % cell_size
 
     # Etend les listes SI la somme des poids n'est pas divisble par n
     if rest > 0:
@@ -40,7 +40,7 @@ def table_building(objects, weights):
             if light_obj != "xn":
                 table[k] = (light_weight, light_obj, heavy_obj)
             else:
-                table[m-1] = (light_weight, light_obj, heavy_obj)
+                table[m-1] = (cell_size - light_weight, heavy_obj, light_obj)
                 k -= 1
             
             weights[i] -= (cell_size-light_weight)
@@ -78,6 +78,7 @@ def table_building(objects, weights):
 def generation(table, cs):
     """
     Génère un objet aléatoire à partir de la table Alias
+    L'objet virtuel de la table d'alias ( xn ) ne peut pas etre retourner 
     
     Inputs:
         table (list): La table de triplets (v, x, x')
@@ -87,9 +88,11 @@ def generation(table, cs):
         str: L'objet généré aléatoirement
     """
     
-    size = len(table)
-    index = random.randint(0, size - 1)
-    weight, obj1, obj2 = table[index]
-    result = obj1 if random.randint(1, cs) <= weight else obj2
+    while True:
+        size = len(table)
+        index = random.randint(0, size - 1)
+        weight, obj1, obj2 = table[index]
+        result = obj1 if random.randint(1, cs) <= weight else obj2
 
-    return result
+        if result != "xn":
+            return result

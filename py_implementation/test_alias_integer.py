@@ -26,7 +26,7 @@ def test():
 
             # Vérification de la génération aléatoire
             if alias_table:  
-                print("    - Generation de 100 tirages aleatoires...")
+                print("    - Generation de 1000 tirages aleatoires...")
                 samples = [generation(alias_table, cell_size) for _ in range(1000)]
                 print(f"      Echantillons générés: {dict(Counter(samples))}")
             print()
