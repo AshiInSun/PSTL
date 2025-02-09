@@ -11,6 +11,10 @@ def table_building(objects, weights):
     Outputs:
         list: Une table de triplets (w, x, x'), utilisée pour la génération 
     """
+    
+    # Temporaire, utiliser pour les tests avec distributions aleatoire, comme on veut uniquement voir ceux ou l'on rentre dans les conditions
+    temp_bool = False
+
 
     n = len(objects)
     total_weight = sum(weights)
@@ -56,6 +60,11 @@ def table_building(objects, weights):
         k += 1
     
     if k == m - 2:
+
+        temp_bool = True
+
+
+        print("------------------------------------------ CONDITION (k == m - 2) -----------------------------------------")
         i = light_stack.pop()
         light_obj, light_weight = objects[i], weights[i]
         j = light_stack.pop()
@@ -63,6 +72,11 @@ def table_building(objects, weights):
         table[k] = (light_weight2, light_obj2, light_obj)
 
     elif k == m-1 and table[m-1] == None:
+
+        temp_bool = True
+
+
+        print("------------------------------- CONDITION ( k == m-1 and table[m-1] == None) --------------------------------")
         i = light_stack.pop()
         light_obj, light_weight = objects[i], weights[i]
         j = light_stack.pop()
@@ -72,7 +86,7 @@ def table_building(objects, weights):
         else:
             table[k] = (light_weight, light_obj, light_obj2)
          
-    return table, cell_size
+    return table, cell_size, temp_bool
 
 
 def generation(table, cs):
