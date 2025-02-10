@@ -4,14 +4,21 @@ from alias_interger_weights import *
 def test():
     
     test_cases = [
+        
+        # NEED FIX: Si liste vide, division par 0, Erreurs, problemes
+        #([], [], "Cas listes vides"),
+
         # Valide
         (["A", "B", "C"], [3, 4, 5], "Cas simple avec 3 objets"),
 
         # Donne une table alias differente au test precedent bien que meme poids. Est ce un probleme? Veut on toujours la meme table 
         (["A", "C", "B"], [3, 5, 4], "Cas simple avec 3 objets, ordre des poids different"),
 
-        # On ne veut pas que m'objet virtuel soit tiré, comment gerer ca?
-        (["A", "B", "C"], [3, 4, 6], "Cas où un élément virtuel est ajouté"),        
+        # Valide
+        (["A", "B", "C"], [3, 4, 6], "Cas où un élément virtuel est ajouté"),  
+
+        # NEED FIX: L'objet avec le poid vide est mit dans la table alias, inutile
+        (["A", "B", "C", "D"], [3, 4, 5, 0], "Cas objet avec poids 0")         
         
         # Tests à ajouter
     ]
@@ -21,7 +28,7 @@ def test():
         try:
             print(f"    Liste des objet et leur poids: {dict(zip(objects, weights))}")
             print("    - Construction de la table Alias...")
-            alias_table, cell_size = table_building(objects, weights)
+            alias_table, cell_size, _ = table_building(objects, weights)
             print(f"      Table Alias construite: {alias_table}")
 
             # Vérification de la génération aléatoire
