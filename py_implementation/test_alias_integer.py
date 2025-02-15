@@ -1,7 +1,15 @@
+import sys
 from collections import Counter
 from alias_interger_weights import *
 
-def test():
+MAX_OBJECTS = 10                # Nombre maximum d'objets générés
+MAX_WEIGHT = 100                # Poids maximum pour un objet
+DEFAULT_TEST_AMOUNT = 100       # Nombre de tests par défaut
+DEFAULT_SAMPLES = 10_000        # Nombre d’échantillons générés par test
+DEFAULT_TOLERANCE = 0.05        # Seuil de tolérance pour la vérification des  distributions
+
+
+def manual_tests():
     
     test_cases = [
         
@@ -48,42 +56,68 @@ def test():
             print(f"ERREUR: {e}")
             break
 
-def test_random_distributions(num_tests=10, num_samples=1000):
+def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAULT_SAMPLES, seuil_tolerance=DEFAULT_TOLERANCE):
 
     print("Génération de tests avec distribution aléatoire...")
 
     for index_test in range(1, num_tests + 1):
-
+        
         try:
-            num_objects = random.randint(3, 10)
+            # Objets et poids associés aleatoires
+            num_objects = random.randint(3, MAX_OBJECTS)
             objects = [f"o{i}" for i in range(1, num_objects + 1)]
-            weights = [random.randint(1, 1000000000) for _ in range(num_objects)]  # Poids entre 1 et 10
+            weights = [random.randint(1, MAX_WEIGHT) for _ in range(num_objects)]
             
-            alias_table, cs, cond_bool = table_building(objects, weights)
+            # Creation de la table d'alias
+            alias_table, cs, cond_bool = table_building(objects.copy(), weights.copy())
+            if not (alias_table): 
+                print(f"Test {index_test}:")
+                print("     La table n'a pas été construite..")
+                print(f"     Liste des objet et leur poids: {dict(zip(objects, weights))}")
+                continue
+            
+            # Generation des objets 
+            generated = Counter(generation(alias_table, cs) for _ in range(num_samples))
 
-            # On passe au suivant si on est pas rentrer dans une des deux conditions
-            if not(cond_bool):  
+            # Calcule des frequences (attendues et observées)
+            total_weight = sum(weights)
+            expected_frequencies = {obj: w / total_weight for obj, w in zip(objects, weights)}
+            observed_frequencies = {obj: generated.get(obj, 0) / num_samples for obj in objects}
+
+            incorrect_frequencies = False
+            for obj in objects:
+                expected = expected_frequencies[obj]
+                observed = observed_frequencies[obj]
+                if abs(expected - observed) > seuil_tolerance:  
+                    incorrect_frequencies = True
+
+            # On print uniquement si on a des frequences d'objets generés suspectes 
+            # Ou si on rentre dans les conditions de fin de l'algo
+            if not(incorrect_frequencies) and not(cond_bool):  
                 continue
 
             print(f"Test {index_test}:")
-
             print(f"    Liste des objet et leur poids: {dict(zip(objects, weights))}")
-
             print(f"    Table Alias construite: {alias_table}")
             print(f"    Cell size: {cs}")
+            print(f"    Fréquences des objets générés (sur {num_samples} essais):")
+          
+            for obj, count in generated.items():
+                print(f"        - {obj}: {count / num_samples:.2f} ({count} fois)")
 
-            if alias_table:  
-                    generated = Counter(generation(alias_table, cs) for _ in range(num_samples))
-
-                    print(f"    Fréquences des objets générés (sur {num_samples} essais):")
-                    for obj, count in generated.items():
-                        print(f"        - {obj}: {count / num_samples:.2f} ({count} fois)")
             print("\n")
 
+        except KeyboardInterrupt:
+            print(f"Interruption détectée, {index_test} tests ont été executées")
+            sys.exit(0)
+
         except Exception as e:
+            print(f"Test {index_test}:")
             print(f"ERREUR: {e}")
-            break
+            print(f"Liste des objet et leur poids: {dict(zip(objects, weights))}")
+            
+        
 
 if __name__ == "__main__":
-    test()
-    #test_random_distributions(10000000)
+    #manual_tests()
+    random_distributions_tests(1_000_000)
