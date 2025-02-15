@@ -10,10 +10,23 @@ def table_building(objects, weights):
     
     Outputs:
         list: Une table de triplets (w, x, x'), utilisée pour la génération 
+
+    Raises:
+        ValueError: Si les listes sont vides, de tailles différentes ou contiennent des poids non strictement positif
     """
     
     # Temporaire, utiliser pour les tests avec distributions aleatoire, comme on veut uniquement voir ceux ou l'on rentre dans les conditions
     temp_bool = False
+
+    # Preconditions sur les Inputs
+    if not objects or not weights:
+        raise ValueError("Les listes 'objects' et 'weights' ne peuvent pas etre vides")
+    
+    if len(objects) != len(weights):
+        raise ValueError("Les listes 'objects' et 'weights' doivent etre de meme taille")
+    
+    if any(w <= 0 for w in weights):
+        raise ValueError("Les poids doivent etre des entiers strictement positifs")
 
 
     n = len(objects)

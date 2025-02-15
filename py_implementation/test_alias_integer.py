@@ -5,8 +5,17 @@ def test():
     
     test_cases = [
         
-        # NEED FIX: Si liste vide, division par 0, Erreurs, problemes
+        # Erreur
         #([], [], "Cas listes vides"),
+
+        # Erreur
+        #(["A"], [1, 2], "Cas tailles des listes differents"),
+
+        # Erreur ( on peut eventuellement filtrer la liste dans l'algo pour enlever les poids à 0 )
+        #(["A", "B", "C"], [0, 1, 2], "Cas poids à 0"),
+
+        # Erreur
+        #(["A", "B", "C"], [-1, 1, 2], "Cas poids negatif"),
 
         # Valide
         (["A", "B", "C"], [3, 4, 5], "Cas simple avec 3 objets"),
@@ -15,10 +24,7 @@ def test():
         (["A", "C", "B"], [3, 5, 4], "Cas simple avec 3 objets, ordre des poids different"),
 
         # Valide
-        (["A", "B", "C"], [3, 4, 6], "Cas où un élément virtuel est ajouté"),  
-
-        # NEED FIX: L'objet avec le poid vide est mit dans la table alias, inutile
-        (["A", "B", "C", "D"], [3, 4, 5, 0], "Cas objet avec poids 0")         
+        (["A", "B", "C"], [3, 4, 6], "Cas où un élément virtuel est ajouté")         
         
         # Tests à ajouter
     ]
@@ -79,5 +85,5 @@ def test_random_distributions(num_tests=10, num_samples=1000):
             break
 
 if __name__ == "__main__":
-    #test()
-    test_random_distributions(10000000)
+    test()
+    #test_random_distributions(10000000)
