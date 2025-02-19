@@ -21,7 +21,7 @@ def build_alias_table(PV):
     summ = sum(PV)
     ratio = n_pv / summ
 
-    new_pv = [p * ratio for p in PV]    # IG c'est ici que t'as oublier de d'appliquer ratio
+    new_pv = [p * ratio for p in PV] 
     alias = [None] * n_pv
 
     for i in range(n_pv):
@@ -34,16 +34,19 @@ def build_alias_table(PV):
 
     # Algorithme "Robin Hood" (Marsaglia)
     while poor:
-        tmp_poor = poor.pop()
-        tmp_rich = rich.pop()
+        tmp_poor = poor[-1]
+        tmp_rich = rich[-1]
 
         alias[tmp_poor] = tmp_rich
         new_pv[tmp_rich] -= 1.0 - new_pv[tmp_poor]
 
-        if new_pv[tmp_rich] < 1.0:      # IG c'est tmp_rich a la place de tmp_pv, t'as mis
+        if new_pv[tmp_rich] < 1.0:
+            poor.pop()
+            rich.pop()
             poor.append(tmp_rich)
+
         else:
-            rich.append(tmp_rich)
+            poor.pop()
 
     return new_pv, alias    # Retourne les deux listes qu'on necessite pour le tirage de l'objet aleatoire 
 
@@ -60,14 +63,17 @@ def sample_from_alias(new_pv, alias):
         int: Index de l'élément généré
     """
     n_pv = len(new_pv)
-    i = random.randint(0, n_pv - 1)  
+    i = random.randint(0, n_pv)  
 
     return i if i <= new_pv[i] else alias[i]
 
 
 # Test marche pas , A REVOIR
 probs = [0.1, 0.2, 0.7]  
+
+print("Building alias table")
 new_pv, alias = build_alias_table(probs)
 
+print("Sampling...")
 samples = [sample_from_alias(new_pv, alias) for _ in range(10)]
 print(samples)
