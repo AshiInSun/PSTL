@@ -1,5 +1,5 @@
 import random
-
+from fractions import Fraction
 
 # j'ai séparé en deux fonction le pseudo-code que tu m'as donné, le resultat devrait etre le meme
 
@@ -63,15 +63,19 @@ def sample_from_alias(new_pv, alias):
         int: Index de l'élément généré
     """
     n_pv = len(new_pv)
-    i = random.randint(0, n_pv)  
+    i = random.randint(0, n_pv - 1)  
 
-    return i if i <= new_pv[i] else alias[i]
+    return i if random.random() <= new_pv[i] else alias[i]
 
 
 # Test marche pas , A REVOIR
-probs = [0.1, 0.2, 0.7]  
 
-print("Building alias table")
+p1 = Fraction(1, 10) # 0.1
+p2 = Fraction(2, 10) # 0.2
+p3 = Fraction(7, 10) # 0.7
+probs = [p1, p2, p3]  
+
+print("Building alias table...")
 new_pv, alias = build_alias_table(probs)
 
 print("Sampling...")
