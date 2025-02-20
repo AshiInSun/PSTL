@@ -1,8 +1,6 @@
 import random
 from fractions import Fraction
 
-# j'ai séparé en deux fonction le pseudo-code que tu m'as donné, le resultat devrait etre le meme
-
 def build_alias_table(PV):
     """
     Construit la table Alias à partir d'un vecteur de probabilités
@@ -67,9 +65,7 @@ def sample_from_alias(new_pv, alias):
 
     return i if random.random() <= new_pv[i] else alias[i]
 
-
-# Test marche pas , A REVOIR
-
+# TESTS TEMPORAIRES
 p1 = Fraction(1, 10) # 0.1
 p2 = Fraction(2, 10) # 0.2
 p3 = Fraction(7, 10) # 0.7
