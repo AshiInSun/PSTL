@@ -9,6 +9,11 @@ The file which implements the alias algorithm can be find in the directory src/m
 
 You also can find the documentation of unuran here : https://statmath.wu.ac.at/software/unuran/ 
 and the documentation of the Alias Algorithm here : https://statmath.wu.ac.at/software/unuran/doc/unuran.html#DAU in the section "5.8.2 DAU – (Discrete) Alias-Urn method".
+Other doc/sources that could be useful : 
+https://docs.scipy.org/doc/scipy/tutorial/stats/sampling_dau.html
+https://experts.illinois.edu/en/publications/an-analysis-of-the-alias-method-for-discrete-random-variate-gener
+https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.sampling.DiscreteAliasUrn.html
+
 
 Authors : Rodrigo VILA and Timothée MORANDEAU, with the supervision of Mehdi NAIMA and Antoine Genitri.
 Contact : timorandeau@gmail.com
