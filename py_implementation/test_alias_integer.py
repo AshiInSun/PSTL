@@ -42,7 +42,7 @@ def manual_tests():
         try:
             print(f"    Liste des objet et leur poids: {dict(zip(objects, weights))}")
             print("    - Construction de la table Alias...")
-            alias_table, cell_size, _ = table_building(objects, weights)
+            alias_table, cell_size = table_building(objects, weights)
             print(f"      Table Alias construite: {alias_table}")
 
             # Vérification de la génération aléatoire
@@ -69,7 +69,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
             weights = [random.randint(1, MAX_WEIGHT) for _ in range(num_objects)]
             
             # Creation de la table d'alias
-            alias_table, cs, cond_bool = table_building(objects.copy(), weights.copy())
+            alias_table, cs = table_building(objects.copy(), weights.copy())
             if not (alias_table): 
                 print(f"Test {index_test}:")
                 print("     La table n'a pas été construite..")
@@ -93,7 +93,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
 
             # On print uniquement si on a des frequences d'objets generés suspectes 
             # Ou si on rentre dans les conditions de fin de l'algo
-            if not(incorrect_frequencies) and not(cond_bool):  
+            if not(incorrect_frequencies):  
                 continue
 
             print(f"Test {index_test}:")
