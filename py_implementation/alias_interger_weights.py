@@ -15,7 +15,7 @@ def table_building(objects, weights):
         ValueError: Si les listes sont vides, de tailles différentes ou contiennent des poids non strictement positif
     """
 
-    # Preconditions sur les Inputs
+    # PRECONDITIONS
     if not objects or not weights:
         raise ValueError("Les listes 'objects' et 'weights' ne peuvent pas etre vides")
     
@@ -25,14 +25,13 @@ def table_building(objects, weights):
     if any(w <= 0 for w in weights):
         raise ValueError("Les poids doivent etre des entiers strictement positifs")
 
-
+    # INITIALISATIONS
     n = len(objects)
     total_weight = sum(weights)
     cell_size = total_weight // n
     rest = total_weight % cell_size
 
-    # Etend les listes SI la somme des poids n'est pas divisble par n
-    if rest > 0:
+    if rest > 0:    # Etend les listes SI la somme des poids n'est pas divisble par n
         objects.append("xn")
         weights.append(cell_size - rest)
         total_weight += weights[-1]
@@ -43,7 +42,18 @@ def table_building(objects, weights):
     light_stack = [i for i, w in enumerate(weights) if w < cell_size]
     k = 0
 
+    # INVARIANT
+    def check_invariant():
+        surplus = sum(weights[i] - cell_size for i in heavy_stack)
+        manque = sum(cell_size - weights[j] for j in light_stack)
+        assert surplus - manque == 0, f"Invariant fail: surplus={surplus}, manque={manque}"
+
+    check_invariant()   # verification avant boucle
+
+    # ALGORITHME
     while heavy_stack:
+        check_invariant()   # verification debut boucle
+
         i = heavy_stack.pop()
         heavy_obj, heavy_weight = objects[i], weights[i]
 
@@ -68,7 +78,8 @@ def table_building(objects, weights):
         elif weights[i] >= cell_size:
             heavy_stack.append(i)  
         k += 1
-         
+        
+        check_invariant()   # verification fin boucle
     return table, cell_size
 
 
@@ -97,7 +108,7 @@ def generation(table, cs):
     
     
     rand_value = random.randint(0, total_weight - 1)
-    
+
     index = rand_value // cs
     weight, obj1, obj2 = table[index]
 
