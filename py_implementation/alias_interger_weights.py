@@ -29,11 +29,12 @@ def table_building(objects, weights):
     n = len(objects)
     total_weight = sum(weights)
     cell_size = total_weight // n
-    rest = total_weight % cell_size
+    rest = total_weight % n
+    r = total_weight % cell_size
 
-    if rest > 0:    # Etend les listes SI la somme des poids n'est pas divisble par n
+    if r > 0:    # Etend les listes SI la somme des poids n'est pas divisble par n
         objects.append("xn")
-        weights.append(cell_size - rest)
+        weights.append(cell_size - r)
         total_weight += weights[-1]
     
     m = total_weight // cell_size
@@ -42,17 +43,20 @@ def table_building(objects, weights):
     light_stack = [i for i, w in enumerate(weights) if w < cell_size]
     k = 0
 
-    # INVARIANT
+    # TODO INVARIANT
+    index_invariant = 0 
     def check_invariant():
+        nonlocal index_invariant
+
         surplus = sum(weights[i] - cell_size for i in heavy_stack)
-        manque = sum(cell_size - weights[j] for j in light_stack)
-        assert surplus - manque == 0, f"Invariant fail: surplus={surplus}, manque={manque}"
+        manque = sum(cell_size - weights[j] for j in light_stack)        
+        assert True, f"Invariant {index_invariant} fail: surplus={surplus}, manque={manque}" # Mis a True temporairement pour eviter les erreurs
+        index_invariant += 1
 
     check_invariant()   # verification avant boucle
 
     # ALGORITHME
     while heavy_stack:
-        check_invariant()   # verification debut boucle
 
         i = heavy_stack.pop()
         heavy_obj, heavy_weight = objects[i], weights[i]

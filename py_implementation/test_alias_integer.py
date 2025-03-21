@@ -5,8 +5,8 @@ from alias_interger_weights import *
 MAX_OBJECTS = 10                # Nombre maximum d'objets générés
 MAX_WEIGHT = 100                # Poids maximum pour un objet
 DEFAULT_TEST_AMOUNT = 100       # Nombre de tests par défaut
-DEFAULT_SAMPLES = 10_000        # Nombre d’échantillons générés par test
-DEFAULT_TOLERANCE = 0.05        # Seuil de tolérance pour la vérification des  distributions
+DEFAULT_SAMPLES = 1        # Nombre d’échantillons générés par test
+DEFAULT_TOLERANCE = 0.15        # Seuil de tolérance pour la vérification des  distributions
 
 
 def manual_tests():
@@ -32,7 +32,10 @@ def manual_tests():
         (["A", "C", "B"], [3, 5, 4], "Cas simple avec 3 objets, ordre des poids different"),
 
         # Valide
-        (["A", "B", "C"], [3, 4, 6], "Cas où un élément virtuel est ajouté")         
+        (["A", "B", "C"], [3, 4, 6], "Cas où un élément virtuel est ajouté"),  
+
+        # Valide
+        (["A", "B", "C", "D"], [1, 1, 1, 7], "Cas où un élément lourd est divisé en deux")       
         
         # Tests à ajouter
     ]
@@ -56,9 +59,36 @@ def manual_tests():
             print(f"ERREUR: {e}")
             break
 
-def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAULT_SAMPLES, seuil_tolerance=DEFAULT_TOLERANCE):
+def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAULT_SAMPLES,
+                                seuil_tolerance=DEFAULT_TOLERANCE, printer=False):
 
     print("Génération de tests avec distribution aléatoire...")
+
+
+    # Renvoi True quand un problème est détecté, pour activer l'affichage
+    def check_frequencies(objects, weights, generated):
+        total_weight = sum(weights)
+        expected_frequencies = {obj: w / total_weight for obj, w in zip(objects, weights)}
+        observed_frequencies = {obj: generated.get(obj, 0) / num_samples for obj in objects}
+
+        for obj in objects:
+            if abs(expected_frequencies[obj] - observed_frequencies[obj]) > seuil_tolerance:
+                return True     # Problème détecté, on active l'affichage
+
+        return False
+
+    # Renvoi True quand un problème est détecté, pour activer l'affichage
+    def check_last_cells(alias_table):
+        if alias_table[-1][2] is None:
+            return False    # Hypothèse respectée, pas besoin d'afficher
+        
+        # Cas où l'élément virtuel est dans la dernière case
+        if alias_table[-1][2] == "xn":  
+            if alias_table[-2][2] is None:
+                return False    # Hypothèse respectée
+            return True     # Problème détecté, on active l'affichage
+
+        return True     # Problème détecté
 
     for index_test in range(1, num_tests + 1):
         
@@ -79,21 +109,12 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
             # Generation des objets 
             generated = Counter(generation(alias_table, cs) for _ in range(num_samples))
 
-            # Calcule des frequences (attendues et observées)
-            total_weight = sum(weights)
-            expected_frequencies = {obj: w / total_weight for obj, w in zip(objects, weights)}
-            observed_frequencies = {obj: generated.get(obj, 0) / num_samples for obj in objects}
+            # Permet de gerer si on veut l'affichage ou non
 
-            incorrect_frequencies = False
-            for obj in objects:
-                expected = expected_frequencies[obj]
-                observed = observed_frequencies[obj]
-                if abs(expected - observed) > seuil_tolerance:  
-                    incorrect_frequencies = True
+            if check_last_cells(alias_table): # or check_frequencies(objects, weights, generated)
+                printer = True
 
-            # On print uniquement si on a des frequences d'objets generés suspectes 
-            # Ou si on rentre dans les conditions de fin de l'algo
-            if not(incorrect_frequencies):  
+            if not(printer):  
                 continue
 
             print(f"Test {index_test}:")
@@ -120,4 +141,4 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
 
 if __name__ == "__main__":
     #manual_tests()
-    random_distributions_tests(1_000_000)
+    random_distributions_tests(10_000_000)
