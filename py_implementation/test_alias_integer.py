@@ -5,8 +5,8 @@ from alias_interger_weights import *
 MAX_OBJECTS = 10                # Nombre maximum d'objets générés
 MAX_WEIGHT = 100                # Poids maximum pour un objet
 DEFAULT_TEST_AMOUNT = 100       # Nombre de tests par défaut
-DEFAULT_SAMPLES = 1        # Nombre d’échantillons générés par test
-DEFAULT_TOLERANCE = 0.15        # Seuil de tolérance pour la vérification des  distributions
+DEFAULT_SAMPLES = 1000          # Nombre d’échantillons générés par test
+DEFAULT_TOLERANCE = 0.1         # Seuil de tolérance pour la vérification des distributions, par défaut à 1 car le comportement par défaut ne genere que 1 sample
 
 
 def manual_tests():
@@ -19,8 +19,8 @@ def manual_tests():
         # Erreur
         #(["A"], [1, 2], "Cas tailles des listes differents"),
 
-        # Erreur ( on peut eventuellement filtrer la liste dans l'algo pour enlever les poids à 0 )
-        #(["A", "B", "C"], [0, 1, 2], "Cas poids à 0"),
+        # Warning, on devrait filtrer (enlever) les poids à 0 selon le papier 
+        (["A", "B", "C"], [0, 1, 2], "Cas poids à 0"),
 
         # Erreur
         #(["A", "B", "C"], [-1, 1, 2], "Cas poids negatif"),
@@ -28,7 +28,7 @@ def manual_tests():
         # Valide
         (["A", "B", "C"], [3, 4, 5], "Cas simple avec 3 objets"),
 
-        # Donne une table alias differente au test precedent bien que meme poids. Est ce un probleme? Veut on toujours la meme table 
+        # Donne une table alias differente au test precedent bien que meme poids.
         (["A", "C", "B"], [3, 5, 4], "Cas simple avec 3 objets, ordre des poids different"),
 
         # Valide
@@ -73,7 +73,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
 
         for obj in objects:
             if abs(expected_frequencies[obj] - observed_frequencies[obj]) > seuil_tolerance:
-                return True     # Problème détecté, on active l'affichage
+                return True     # Problème détecté, affichage activé
 
         return False
 
@@ -110,8 +110,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
             generated = Counter(generation(alias_table, cs) for _ in range(num_samples))
 
             # Permet de gerer si on veut l'affichage ou non
-
-            if check_last_cells(alias_table): # or check_frequencies(objects, weights, generated)
+            if check_frequencies(objects, weights, generated): # or check_last_cells(alias_table)
                 printer = True
 
             if not(printer):  
