@@ -13,13 +13,13 @@ def manual_tests():
     
     test_cases = [
         
-        # ⚠ Erreur non geré dans notre pseudo-code, est ce qu'il font un traitement special dans unnuran?
+        # NOTE Erreur non geré dans notre pseudo-code, est ce qu'il font un traitement special dans unnuran?
         #([], "Cas listes vides"),
 
-        # ⚠ Valide mais est ce qu'il font un traitement special dans unnuran quand ils ont des poids à 0? genre filtrage
+        # NOTE Valide mais est ce qu'il font un traitement special dans unnuran quand ils ont des poids à 0? genre filtrage
         ([0, 1, 2], "Cas poids à 0"),
 
-        # ⚠ Erreur, ca genere la table mais les poids negatif ne devrait pas etre possible? traitement special dans unuran?
+        # NOTE Erreur, ca genere la table mais les poids negatif ne devrait pas etre possible? traitement special dans unuran?
         ([-1, 1, 2], "Cas poids negatif"),
 
         # Valide
@@ -60,7 +60,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
                                 seuil_tolerance=DEFAULT_TOLERANCE, printer=False):
     print("Génération de tests avec distribution aléatoire...")
 
-    # TODO: pas correcte, à revoir.
+    # FIXME pas correcte, à revoir.
     def check_frequencies(probabilities, generated):
         expected_frequencies = {i: p for i, p in enumerate(probabilities)}
         observed_frequencies = {i: generated.get(i, 0) / num_samples for i in range(len(probabilities))}
