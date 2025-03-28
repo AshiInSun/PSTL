@@ -1,4 +1,5 @@
 import random
+from collections import Counter
 from fractions import Fraction
 
 def build_alias_table(PV):
@@ -17,9 +18,9 @@ def build_alias_table(PV):
     
     n_pv = len(PV)
     summ = sum(PV)
-    ratio = n_pv / summ
+    ratio = Fraction(n_pv, summ)
 
-    new_pv = [p * ratio for p in PV] 
+    new_pv = [Fraction(p) * ratio for p in PV] 
     alias = [None] * n_pv
 
     for i in range(n_pv):
@@ -36,7 +37,7 @@ def build_alias_table(PV):
         tmp_rich = rich[-1]
 
         alias[tmp_poor] = tmp_rich
-        new_pv[tmp_rich] -= 1.0 - new_pv[tmp_poor]
+        new_pv[tmp_rich] -= Fraction(1.0) - new_pv[tmp_poor]
 
         if new_pv[tmp_rich] < 1.0:
             poor.pop()
@@ -46,7 +47,7 @@ def build_alias_table(PV):
         else:
             poor.pop()
 
-    return new_pv, alias    # Retourne les deux listes qu'on necessite pour le tirage de l'objet aleatoire 
+    return [float(p) for p in new_pv], alias    # Retourne les deux listes qu'on necessite pour le tirage de l'objet aleatoire 
 
 
 def sample_from_alias(new_pv, alias):
@@ -64,16 +65,3 @@ def sample_from_alias(new_pv, alias):
     i = random.randint(0, n_pv - 1)  
 
     return i if random.random() <= new_pv[i] else alias[i]
-
-# TESTS TEMPORAIRES
-p1 = Fraction(1, 10) # 0.1
-p2 = Fraction(2, 10) # 0.2
-p3 = Fraction(7, 10) # 0.7
-probs = [p1, p2, p3]  
-
-print("Building alias table...")
-new_pv, alias = build_alias_table(probs)
-
-print("Sampling...")
-samples = [sample_from_alias(new_pv, alias) for _ in range(10)]
-print(samples)
