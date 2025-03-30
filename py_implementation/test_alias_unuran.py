@@ -13,19 +13,19 @@ def manual_tests():
     
     test_cases = [
         
-        # NOTE Erreur non geré dans notre pseudo-code, est ce qu'il font un traitement special dans unnuran?
+        # Erreur
         #([], "Cas listes vides"),
 
-        # NOTE Valide mais est ce qu'il font un traitement special dans unnuran quand ils ont des poids à 0? genre filtrage
-        ([0, 1, 2], "Cas poids à 0"),
+        # Erreur
+        #([-1, 1, 2], "Cas poids negatif"),
 
-        # NOTE Erreur, ca genere la table mais les poids negatif ne devrait pas etre possible? traitement special dans unuran?
-        ([-1, 1, 2], "Cas poids negatif"),
+        # Valide 
+        ([0, 1, 2], "Cas poids à 0"),
 
         # Valide
         ([3, 4, 5], "Cas simple avec 3 objets"),
 
-        # Donne une table alias differente au test precedent bien que meme poids.
+        # Valide
         ([3, 5, 4], "Cas simple avec 3 objets, ordre des poids different"),
 
         # Valide
@@ -119,5 +119,5 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
         
 
 if __name__ == "__main__":
-    #manual_tests()
-    random_distributions_tests(10_000_000)
+    manual_tests()
+    #random_distributions_tests(10_000_000)

@@ -22,8 +22,8 @@ def table_building(objects, weights):
     if len(objects) != len(weights):
         raise ValueError("Les listes 'objects' et 'weights' doivent etre de meme taille")
     
-    if any(w <= 0 for w in weights):
-        raise ValueError("Les poids doivent etre des entiers strictement positifs")
+    if any(w < 0 for w in weights):
+        raise ValueError("Les poids doivent etre des entiers positifs")
 
     # INITIALISATIONS
     n = len(objects)

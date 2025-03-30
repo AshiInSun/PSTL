@@ -12,6 +12,13 @@ def build_alias_table(PV):
     Returns:
         tuple: (prob_table, alias_table)
     """
+
+    # PRECONDITIONS
+    if not PV:
+        raise ValueError("La liste de probabilité ne peut pas etre vide")
+    
+    if any(p < 0 for p in PV):
+        raise ValueError("Les probabilités ne peuvent pas etre negatives")
     
     poor = []
     rich = []
