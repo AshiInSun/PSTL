@@ -19,6 +19,8 @@ def manual_tests():
         # Erreur
         #([-1, 1, 2], "Cas poids negatif"),
 
+        ([1, 4, 4], "Test avec 1/3"),
+
         # Valide 
         ([0, 1, 2], "Cas poids à 0"),
 
@@ -44,6 +46,7 @@ def manual_tests():
             print("    - Construction de la table Alias...")
             new_probs, alias_table = build_alias_table(probs)
             print(f"      Table Alias construite: {alias_table}")
+            print(f"      Probabilités ajustées: {new_probs}")
 
             # Vérification de la génération aléatoire
             if alias_table:  
@@ -60,7 +63,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
                                 seuil_tolerance=DEFAULT_TOLERANCE, printer=False):
     print("Génération de tests avec distribution aléatoire...")
 
-    # FIXME pas correcte, à revoir.
+    # FIXME pas correcte, expected_frequencies à revoir
     def check_frequencies(probabilities, generated):
         expected_frequencies = {i: p for i, p in enumerate(probabilities)}
         observed_frequencies = {i: generated.get(i, 0) / num_samples for i in range(len(probabilities))}
