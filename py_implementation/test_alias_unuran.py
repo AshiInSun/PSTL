@@ -63,9 +63,10 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
                                 seuil_tolerance=DEFAULT_TOLERANCE, printer=False):
     print("Génération de tests avec distribution aléatoire...")
 
-    # FIXME pas correcte, expected_frequencies à revoir
+    
     def check_frequencies(probabilities, generated):
-        expected_frequencies = {i: p for i, p in enumerate(probabilities)}
+        total_proba = sum(probabilities)
+        expected_frequencies = {i: p / total_proba for i, p in enumerate(probabilities)}
         observed_frequencies = {i: generated.get(i, 0) / num_samples for i in range(len(probabilities))}
 
         for i in range(len(probabilities)):
@@ -93,7 +94,7 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
             generated = Counter(sample_from_alias(new_pv, alias_table) for _ in range(num_samples))
 
             # Vérification des fréquences
-            #printer = check_frequencies(new_pv, generated)
+            printer = check_frequencies(probabilities, generated)
 
             # Affichage uniquement si problème détecté
             if not printer:
@@ -117,7 +118,8 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
         except Exception as e:
             print(f"Test {index_test}:")
             print(f"ERREUR: {e}")
-            print(f"Probabilités: {probabilities}")
+            print(f"Probabilités: {probabilities}\n")
+
             
         
 
