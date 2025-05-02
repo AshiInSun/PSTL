@@ -10,11 +10,12 @@ DEFAULT_SAMPLES = 10000
 def read_weights_from_file(filepath):
     try:
         with open(filepath, "r") as file:
-            line = file.readline()
-            if "," in line:
-                return [int(x.strip()) for x in line.split(",")]
-            else:
-                return [int(x.strip()) for x in line.split()]
+            weights = []
+            for line in file:
+                line = line.strip()
+                if line:  # ignorer les lignes vides
+                    weights.append(int(line))
+            return weights
     except Exception as e:
         raise ValueError(f"Erreur de lecture du fichier '{filepath}': {e}")
 
@@ -24,6 +25,7 @@ def run_chi2_test(filepath, seed=1, n_samples=DEFAULT_SAMPLES):
 
     objects = [f"obj{i}" for i in range(len(weights))]
     table, cell_size = table_building(objects, weights.copy())
+    print(f"\ntable : {table}")
 
     samples = [generation(table, cell_size) for _ in range(n_samples)]
     counts = Counter(samples)
@@ -31,6 +33,8 @@ def run_chi2_test(filepath, seed=1, n_samples=DEFAULT_SAMPLES):
 
     total_weight = sum(weights)
     expected = [n_samples * (w / total_weight) for w in weights]
+    print(f"\observed : {observed}")
+    print(f"expected : {expected}")
 
     stat, p_value = chisquare(f_obs=observed, f_exp=expected)
 

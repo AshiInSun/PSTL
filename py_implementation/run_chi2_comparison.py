@@ -11,7 +11,7 @@ def main():
         sys.exit(1)
 
     distribution_file = sys.argv[1]
-    seeds = list(range(1, 31))  # Seeds de 1 à 30
+    seeds = list(range(1, 101))  # Seeds de 1 à 100
     n_samples = 10000  # Nombre d'échantillons pour chaque test
 
     results_unuran = []
