@@ -1,12 +1,13 @@
 import sys
 from collections import Counter
 from unuran_alias import *
+import argparse
 
 MAX_OBJECTS = 10                # Nombre maximum d'objets générés
 MAX_WEIGHT = 100                # Poids maximum pour un objet
 DEFAULT_TEST_AMOUNT = 100       # Nombre de tests par défaut
 DEFAULT_SAMPLES = 1000          # Nombre d’échantillons générés par test
-DEFAULT_TOLERANCE = 0.9         # Seuil de tolérance pour la vérification des distributions, par défaut à 1 car le comportement par défaut ne genere que 1 sample
+DEFAULT_TOLERANCE = 0.1         # Seuil de tolérance pour la vérification des distributions, par défaut à 1 car le comportement par défaut ne genere que 1 sample
 
 
 def manual_tests():
@@ -94,7 +95,8 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
             generated = Counter(sample_from_alias(new_pv, alias_table) for _ in range(num_samples))
 
             # Vérification des fréquences
-            printer = check_frequencies(probabilities, generated)
+            if (check_frequencies(probabilities, generated)):
+                printer = True
 
             # Affichage uniquement si problème détecté
             if not printer:
@@ -124,5 +126,24 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
         
 
 if __name__ == "__main__":
-    manual_tests()
-    #random_distributions_tests(10_000_000)
+    parser = argparse.ArgumentParser(description="Test de la méthode d'Alias avec UNURAN.")
+    parser.add_argument("--mode", choices=["manuel", "aleatoire"], default="aleatoire",
+                        help="Mode de test : 'manuel' ou 'aleatoire' (défaut: aleatoire)")
+    parser.add_argument("--tests", type=int, default=DEFAULT_TEST_AMOUNT,
+                        help="Nombre de tests aléatoires à lancer (mode aleatoire)")
+    parser.add_argument("--samples", type=int, default=DEFAULT_SAMPLES,
+                        help="Nombre d’échantillons générés par test (mode aleatoire)")
+    parser.add_argument("--tol", type=float, default=DEFAULT_TOLERANCE,
+                        help="Tolérance d'écart pour les fréquences (mode aleatoire)")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Affiche tous les résultats, même corrects (mode aleatoire)")
+
+    args = parser.parse_args()
+
+    if args.mode == "manuel":
+        manual_tests()
+    elif args.mode == "aleatoire":
+        random_distributions_tests(num_tests=args.tests,
+                                   num_samples=args.samples,
+                                   seuil_tolerance=args.tol,
+                                   printer=args.verbose)

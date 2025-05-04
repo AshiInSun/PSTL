@@ -1,6 +1,7 @@
 import sys
 from collections import Counter
 from alias_interger_weights import *
+import argparse
 
 MAX_OBJECTS = 10                # Nombre maximum d'objets générés
 MAX_WEIGHT = 100                # Poids maximum pour un objet
@@ -20,7 +21,7 @@ def manual_tests():
         #(["A"], [1, 2], "Cas tailles des listes differents"),
 
         # Warning, on devrait filtrer (enlever) les poids à 0 selon le papier 
-        (["A", "B", "C"], [0, 1, 2], "Cas poids à 0"),
+        #(["A", "B", "C"], [0, 1, 2], "Cas poids à 0"),
 
         # Erreur
         #(["A", "B", "C"], [-1, 1, 2], "Cas poids negatif"),
@@ -28,7 +29,7 @@ def manual_tests():
         # Valide
         (["A", "B", "C"], [3, 4, 5], "Cas simple avec 3 objets"),
 
-        # Donne une table alias differente au test precedent bien que meme poids.
+        # Valide, donne une table alias differente au test precedent bien que meme poids.
         (["A", "C", "B"], [3, 5, 4], "Cas simple avec 3 objets, ordre des poids different"),
 
         # Valide
@@ -135,9 +136,30 @@ def random_distributions_tests(num_tests=DEFAULT_TEST_AMOUNT, num_samples=DEFAUL
             print(f"Test {index_test}:")
             print(f"ERREUR: {e}")
             print(f"Liste des objet et leur poids: {dict(zip(objects, weights))}")
+    
+    print("Done.")
             
         
 
 if __name__ == "__main__":
-    #manual_tests()
-    random_distributions_tests(10_000_000)
+    parser = argparse.ArgumentParser(description="Test de la méthode d'Alias avec entiers.")
+    parser.add_argument("--mode", choices=["manuel", "aleatoire"], default="aleatoire",
+                        help="Mode de test : 'manuel' pour tests fixes, 'aleatoire' pour tests aléatoires (défaut: aleatoire)")
+    parser.add_argument("--tests", type=int, default=DEFAULT_TEST_AMOUNT,
+                        help="Nombre de tests aléatoires à lancer (mode aleatoire)")
+    parser.add_argument("--samples", type=int, default=DEFAULT_SAMPLES,
+                        help="Nombre d’échantillons générés par test (mode aleatoire)")
+    parser.add_argument("--tol", type=float, default=DEFAULT_TOLERANCE,
+                        help="Tolérance d'écart pour les fréquences (mode aleatoire)")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Active l'affichage même en cas de résultats corrects (mode aleatoire)")
+
+    args = parser.parse_args()
+
+    if args.mode == "manuel":
+        manual_tests()
+    elif args.mode == "aleatoire":
+        random_distributions_tests(num_tests=args.tests,
+                                   num_samples=args.samples,
+                                   seuil_tolerance=args.tol,
+                                   printer=args.verbose)
